@@ -1,6 +1,15 @@
 <?php
 class sfGoogleMelody extends sfMelody1
 {
+  /**
+   * Concrete implementation of myUser instance update after successful connection.
+   * Here you can, for example, update sfGuardUserProfile with data that can be
+   * retrieved through OAuth service.
+   */
+  public function updatesfGuardUser(myUser $sf_user)
+  {
+  }
+  
   protected static $apis = array(
                                   'analytics' => 'http://www.google.com/analytics/feeds',
                                   'google_base' => 'http://www.google.com/base/feeds',
@@ -10,12 +19,12 @@ class sfGoogleMelody extends sfMelody1
                                   'contacts' => 'http://www.google.com/m8/feeds',
                                   'chrome' => 'http://www.googleapis.com/auth/chromewebstore.readonly',
                                   'documents' => 'http://docs.google.com/feeds',
+                                  'email' => 'https://www.googleapis.com/auth/userinfo.email',
                                   'finance' => 'http://finance.google.com/finance/feeds',
                                   'gmail' => 'http://mail.google.com/mail/feed/atom',
                                   'health' => 'http://www.google.com/health/feeds',
                                   'h9' => 'http://www.google.com/h9/feeds',
                                   'maps' => 'http://maps.google.com/maps/feeds',
-                                  'moderator' => 'tag:google.com,2010:auth/moderator',
                                   'open_social' => 'http://www-opensocial.googleusercontent.com/api/people',
                                   'orkut' => 'http://www.orkut.com/social/rest',
                                   'picasa' => 'http://picasaweb.google.com/data',
@@ -33,11 +42,16 @@ class sfGoogleMelody extends sfMelody1
     $this->setRequestAuthUrl('https://www.google.com/accounts/OAuthAuthorizeToken');
     $this->setAccessTokenUrl('https://www.google.com/accounts/OAuthGetAccessToken');
 
-    $this->setNamespace('default', 'http://www.google.com');
+    $this->setNamespace('default', 'https://www.google.com');
     $this->addNamespaces(self::$apis);
     $this->setCallParameter('alt', 'json');
-    $this->setAlias('contacts', 'm8/feeds/contacts');
-    $this->setAlias('me', 'default/full');
+    
+    $this->setAlias('me', '@me');
+    $this->setAlias('email', 'userinfo/email');
+    $this->setAlias('contacts', 'contacts/default/full');
+    $this->setAliasNamespace('me', 'open_social');
+    $this->setAliasNamespace('email', 'default');
+    $this->setAliasNamespace('contacts', 'contacts');
 
     if(isset($config['scope']))
     {

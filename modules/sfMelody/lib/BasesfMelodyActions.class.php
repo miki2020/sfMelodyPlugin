@@ -24,6 +24,11 @@ class BasesfMelodyActions extends sfMelodyBaseActions
     $access_token = $melody->getAccessToken($this->getCode());
 
     $melody->setToken($access_token);
+    
+    if (!$melody->getToken()->getTokenKey() || !$melody->getToken()->getIdentifier())
+    {
+      $this->redirect($this->getCallback());
+    }
 
     $user = null;
 
@@ -71,6 +76,7 @@ class BasesfMelodyActions extends sfMelodyBaseActions
         }
         else
         {
+          $melody->updatesfGuardUser($user);
           $user->save();
         }
       }
